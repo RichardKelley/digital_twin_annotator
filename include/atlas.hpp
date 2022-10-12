@@ -151,12 +151,18 @@ namespace digital_twin {
     }
 
     void serialize(YAML::Emitter& emitter) {
+      emitter << YAML::BeginSeq;
       for (int i = 0; i < landmarks.size(); ++i) {
-	emitter << YAML::BeginSeq;
-	emitter << i;
+	emitter << YAML::BeginMap;
+	emitter << YAML::Key << "index";
+	emitter << YAML::Value << i;
+
+	emitter << YAML::Key << "bounds";
+	emitter << YAML::Value;
 	landmarks[i].serialize(emitter);
-	emitter << YAML::EndSeq;
+	emitter << YAML::EndMap;
       }
+      emitter << YAML::EndSeq;
     }
     
   };

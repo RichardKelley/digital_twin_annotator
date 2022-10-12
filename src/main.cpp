@@ -74,8 +74,11 @@ int main(int argc, char **argv) {
   using namespace std::literals::chrono_literals;
 
   YAML::Emitter emitter;
-
+  
   std::cerr << "Current directory: " << fs::current_path() << std::endl;
+  if (fs::exists("atlas")) {
+    fs::remove_all("atlas");
+  }
   
   std::cerr << "Starting main loop..." << std::endl;
   while (!done) {
