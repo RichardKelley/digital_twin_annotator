@@ -48,6 +48,7 @@ target_link_libraries(dt_annotator
   ${SDL2_LIBRARIES}
   ${GLEW_LIBRARIES}
   ${PCL_LIBRARIES}
+  yaml-cpp
 )
 
 

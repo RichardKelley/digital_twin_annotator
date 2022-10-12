@@ -10,6 +10,8 @@
 
 #include <glm/glm.hpp>
 
+#include <yaml-cpp/yaml.h>
+
 namespace digital_twin {
 
   /*
@@ -92,6 +94,24 @@ namespace digital_twin {
       glBindVertexArray(0);
       glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
+
+    void serialize(YAML::Emitter& emitter) {
+      emitter << YAML::BeginMap;
+      emitter << YAML::Key << "min_x";
+      emitter << YAML::Value << min_x;
+
+      emitter << YAML::Key << "min_y";
+      emitter << YAML::Value << min_y;
+
+      emitter << YAML::Key << "max_x";
+      emitter << YAML::Value << max_x;
+
+      emitter << YAML::Key << "max_y";
+      emitter << YAML::Value << max_y;
+      
+      emitter << YAML::EndMap;	
+    }
+
     
   };
 

@@ -16,6 +16,8 @@
 #include <point2.hpp>
 #include <landmark.hpp>
 
+#include <yaml-cpp/yaml.h>
+
 namespace digital_twin {
   
   template<typename PointT>
@@ -41,6 +43,10 @@ namespace digital_twin {
     std::vector<Landmark<PointT>> landmarks;
     
   public:
+
+    int get_num_landmarks() const {
+      return landmarks.size();
+    }
 
     Atlas(const pcl::PointCloud<PointT>::ConstPtr cloud, int x_tiles, int y_tiles)
       : num_x_tiles{x_tiles}
@@ -140,7 +146,17 @@ namespace digital_twin {
 	extraction_ctr += 1;
       }
 
+      landmarks.push_back(landmark);
       return landmark;
+    }
+
+    void serialize(YAML::Emitter& emitter) {
+      for (int i = 0; i < landmarks.size(); ++i) {
+	emitter << YAML::BeginSeq;
+	emitter << i;
+	landmarks[i].serialize(emitter);
+	emitter << YAML::EndSeq;
+      }
     }
     
   };

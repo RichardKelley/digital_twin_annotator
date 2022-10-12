@@ -4,6 +4,7 @@
 #include <vector>
 #include <thread>
 #include <memory>
+#include <fstream>
 
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -67,13 +68,15 @@ int main(int argc, char **argv) {
     }
   }
   
-
-  
   bool done = false;
   float dt = 0.0;
 
   using namespace std::literals::chrono_literals;
 
+  YAML::Emitter emitter;
+
+  std::cerr << "Current directory: " << fs::current_path() << std::endl;
+  
   std::cerr << "Starting main loop..." << std::endl;
   while (!done) {
     auto start_time = std::chrono::system_clock::now();
@@ -81,10 +84,6 @@ int main(int argc, char **argv) {
     // process inputs
     done = input_system.update(render_system, dt);
     
-    // TODO perform any simulation
-    
-    // draw
-    //render_system.render(world);
     render_system.render();
     
     auto end_time = std::chrono::system_clock::now();
@@ -96,9 +95,20 @@ int main(int argc, char **argv) {
     }
   }
   
-  // TODO finalize writes to disk
 
-  // TODO shut down everything
   render_system.shutdown();
 
+  atlas.serialize(emitter);
+  std::ofstream yaml_out{"landmarks.yaml"};
+
+  yaml_out << emitter.c_str() << std::endl;
+
+  fs::create_directory("atlas");
+  fs::copy("./landmarks.yaml", "atlas/");
+  fs::remove("./landmarks.yaml");
+
+  for (int i = 0; i < atlas.get_num_landmarks(); ++i) {
+    fs::copy(fmt::format("subcloud_{}.pcd", i), "atlas/");
+    fs::remove(fmt::format("subcloud_{}.pcd", i));
+  }
 }
